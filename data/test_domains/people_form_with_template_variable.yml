@@ -1,0 +1,21 @@
+# all hashtags are comments :)
+action_factory: remote
+
+intents:
+ - inform
+ - enter_name
+
+slots:
+  user_name:
+    type: text
+  person_name:
+    type: text
+  requested_slot:
+    type: unfeaturized
+
+templates:
+  utter_ask_person_name:
+    - "{user_name}, what's the name of the person you're looking for?"
+
+actions:
+  - action_search_people

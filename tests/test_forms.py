@@ -253,6 +253,24 @@ def test_people_form():
     assert events[0].value == name
 
 
+def test_people_form_with_template_variable():
+    domain = TemplateDomain.load("data/test_domains/people_form_with_template_variable.yml")
+    tracker_store = InMemoryTrackerStore(domain)
+    out = CollectingOutputChannel()
+    sender_id = "test-people-with-template-variable"
+    dispatcher = Dispatcher(sender_id, out, domain)
+    tracker = tracker_store.get_or_create_tracker(sender_id)
+
+    tracker.update(SlotSet('user_name', 'Monty'))
+
+    # first user utterance
+    tracker.update(UserUttered("", intent={"name": "inform"}))
+    ActionSearchPeople().run(dispatcher, tracker, domain)
+    last_message = dispatcher.latest_bot_messages[-1]
+
+    assert 'Monty' in last_message.text
+
+
 def test_travel_form():
     domain = TemplateDomain.load("data/test_domains/travel_form.yml")
     tracker_store = InMemoryTrackerStore(domain)
